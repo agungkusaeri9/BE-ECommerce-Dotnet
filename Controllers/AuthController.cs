@@ -22,7 +22,6 @@ namespace backend_dotnet.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-
             try
             {
                 var response = await _authService.RegisterAsync(request);

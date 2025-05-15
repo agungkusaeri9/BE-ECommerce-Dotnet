@@ -14,15 +14,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Logging debug test
-Console.WriteLine("Startup running...");
+DotNetEnv.Env.Load();
 
 // Tambahkan service FluentValidation
 builder.Services.AddControllers()
     .AddFluentValidation(config =>
     {
         config.RegisterValidatorsFromAssemblyContaining<RegisterValidator>();
+        config.RegisterValidatorsFromAssemblyContaining<LoginValidator>();
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -36,6 +35,14 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+var defaultConnection = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(defaultConnection, ServerVersion.AutoDetect(defaultConnection)));
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -44,13 +51,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-            )
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
+
+
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
