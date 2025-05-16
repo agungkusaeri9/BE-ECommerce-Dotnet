@@ -7,6 +7,7 @@ namespace backend_dotnet.Validators.Authentication
     {
         public LoginValidator()
         {
+            Console.WriteLine("LoginValidator");
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email is required")
                 .EmailAddress().WithMessage("Invalid email format");
