@@ -2,6 +2,8 @@ using System.Text;
 using backend_dotnet.Data;
 using backend_dotnet.Entities;
 using backend_dotnet.Interfaces;
+using backend_dotnet.Interfaces.Repositories;
+using backend_dotnet.Interfaces.Services;
 using backend_dotnet.Repositories;
 using backend_dotnet.Services;
 using backend_dotnet.Validators.Authentication;
@@ -60,6 +62,9 @@ namespace backend_dotnet.Extentions
 
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IBrandRepository, BrandRepository>();
+
+            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 
             return services;
         }
