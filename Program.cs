@@ -3,6 +3,7 @@ using backend_dotnet.Data;
 using backend_dotnet.Entities;
 using backend_dotnet.Helpers;
 using backend_dotnet.Interfaces;
+using backend_dotnet.Repositories;
 using backend_dotnet.Services;
 using backend_dotnet.Validators.Authentication;
 using FluentValidation;
@@ -36,6 +37,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
 
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
 var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
