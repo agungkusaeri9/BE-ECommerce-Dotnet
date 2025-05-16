@@ -35,7 +35,7 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] ProductCategoryCreate request)
+        public async Task<IActionResult> CreateAsync([FromForm] ProductCategoryCreate request)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] ProductCategoryUpdate request)
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] ProductCategoryUpdate request)
         {
             try
             {

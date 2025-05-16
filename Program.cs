@@ -16,13 +16,11 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
-Console.WriteLine("Start Program");
 
 // Tambahkan service FluentValidation
 builder.Services.AddControllers()
     .AddFluentValidation(config =>
     {
-        Console.WriteLine("FluentValidation");
         config.RegisterValidatorsFromAssemblyContaining<RegisterValidator>();
         config.RegisterValidatorsFromAssemblyContaining<LoginValidator>();
     });
@@ -39,6 +37,8 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
 
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
 var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");

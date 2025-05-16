@@ -41,7 +41,6 @@ namespace backend_dotnet.Repositories
 
         public async Task<ProductCategory> CreateAsync(ProductCategory category)
         {
-            category.Slug = category.Name.ToLower().Replace(" ", "-");
             _context.ProductCategories.Add(category);
             await _context.SaveChangesAsync();
             return category;

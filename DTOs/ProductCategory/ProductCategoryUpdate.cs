@@ -10,8 +10,6 @@ namespace backend_dotnet.DTOs.ProductCategory
     {
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; } = default!;
-
-        [Required(ErrorMessage = "Image is required")]
-        public string? Image { get; set; } = default!;
+        public IFormFile? Image { get; set; } = default!;
     }
 }

@@ -11,10 +11,12 @@ namespace backend_dotnet.Services
     public class ProductCategoryService : IProductCategoryService
     {
         private readonly IProductCategoryRepository _productCategoryRepository;
+        private readonly IFileUploadService _fileUploadService;
 
-        public ProductCategoryService(IProductCategoryRepository repository)
+        public ProductCategoryService(IProductCategoryRepository repository, IFileUploadService fileUploadService)
         {
             _productCategoryRepository = repository;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<(IEnumerable<ProductCategory>, int)> GetAllAsync(int page, int limit)
@@ -29,21 +31,41 @@ namespace backend_dotnet.Services
 
         public async Task<ProductCategory> CreateAsync(ProductCategoryCreate request)
         {
+            string? imagePath = null;
+            if (request.Image != null)
+            {
+                imagePath = await _fileUploadService.UploadAsync(request.Image, "images/product-categories");
+            }
+            else
+            {
+                imagePath = "images/categories/default.jpg";
+            }
             var category = new ProductCategory
             {
                 Name = request.Name,
-                Image = request.Image
+                Slug = (request.Name ?? string.Empty).ToLower().Replace(" ", "-"),
+                Image = imagePath
             };
+
             return await _productCategoryRepository.CreateAsync(category);
         }
+
 
         public async Task<ProductCategory> UpdateAsync(int id, ProductCategoryUpdate request)
         {
             var existing = await _productCategoryRepository.GetByIdAsync(id);
             if (existing == null) throw new Exception("Category not found");
 
+            if (request.Image != null)
+            {
+                if (!string.IsNullOrEmpty(existing.Image))
+                {
+                    await _fileUploadService.DeleteAsync(existing.Image);
+                }
+                existing.Image = await _fileUploadService.UploadAsync(request.Image, "images/product-categories");
+            }
+
             existing.Name = request.Name;
-            existing.Image = request.Image;
 
             return await _productCategoryRepository.UpdateAsync(existing);
         }
@@ -53,6 +75,10 @@ namespace backend_dotnet.Services
             var existing = await _productCategoryRepository.GetByIdAsync(id);
             if (existing == null)
                 throw new KeyNotFoundException("Category not found");
+            if (!string.IsNullOrEmpty(existing.Image))
+            {
+                await _fileUploadService.DeleteAsync(existing.Image);
+            }
             return await _productCategoryRepository.DeleteAsync(id);
         }
     }
