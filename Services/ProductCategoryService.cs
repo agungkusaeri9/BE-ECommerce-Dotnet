@@ -66,7 +66,7 @@ namespace backend_dotnet.Services
                 }
                 existing.Image = await _fileUploadService.UploadAsync(request.Image, "images/product-categories");
             }
-
+            existing.Slug = (request.Name ?? string.Empty).ToLower().Replace(" ", "-");
             existing.Name = request.Name;
 
             return await _productCategoryRepository.UpdateAsync(existing);

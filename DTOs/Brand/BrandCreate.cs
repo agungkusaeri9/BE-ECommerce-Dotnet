@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace backend_dotnet.DTOs.ProductCategory
+namespace backend_dotnet.DTOs.Brand
 {
-    public class ProductCategoryUpdate
+    public class BrandCreate
     {
         public string? Name { get; set; } = default!;
         public IFormFile? Image { get; set; } = default!;

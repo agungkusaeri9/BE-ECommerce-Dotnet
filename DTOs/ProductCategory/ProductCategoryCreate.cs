@@ -8,7 +8,7 @@ namespace backend_dotnet.DTOs.ProductCategory
 {
     public class ProductCategoryCreate
     {
-        public string Name { get; set; } = default!;
+        public string? Name { get; set; } = default!;
         public IFormFile? Image { get; set; } = default!;
     }
 }
