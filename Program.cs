@@ -6,6 +6,7 @@ using backend_dotnet.Interfaces;
 using backend_dotnet.Repositories;
 using backend_dotnet.Services;
 using backend_dotnet.Validators.Authentication;
+using backend_dotnet.Validators.ProductCategory;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,11 +19,21 @@ var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
 
 // Tambahkan service FluentValidation
+// builder.Services.AddControllers()
+//     .AddFluentValidation(config =>
+//     {
+//         config.RegisterValidatorsFromAssemblyContaining<RegisterValidator>();
+//         config.RegisterValidatorsFromAssemblyContaining<LoginValidator>();
+//         config.RegisterValidatorsFromAssemblyContaining<ProductCategoryCreateValidator>();
+//     });
+
 builder.Services.AddControllers()
-    .AddFluentValidation(config =>
+    .AddFluentValidation(fv =>
     {
-        config.RegisterValidatorsFromAssemblyContaining<RegisterValidator>();
-        config.RegisterValidatorsFromAssemblyContaining<LoginValidator>();
+        fv.RegisterValidatorsFromAssemblyContaining<RegisterValidator>();
+        fv.RegisterValidatorsFromAssemblyContaining<LoginValidator>();
+        fv.RegisterValidatorsFromAssemblyContaining<ProductCategoryCreateValidator>();
+        fv.RegisterValidatorsFromAssemblyContaining<ProductCategoryUpdateValidator>();
     });
 
 builder.Services.AddEndpointsApiExplorer();

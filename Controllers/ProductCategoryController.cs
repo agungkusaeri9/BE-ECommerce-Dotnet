@@ -9,6 +9,7 @@ namespace backend_dotnet.Controllers
 {
     [ApiController]
     [Route("api/product-categories")]
+
     public class ProductCategoryController : ControllerBase
     {
         private readonly IProductCategoryService _productCategoryService;
@@ -42,9 +43,9 @@ namespace backend_dotnet.Controllers
                 var category = await _productCategoryService.CreateAsync(request);
                 return ResponseFormatter.Success(category, "Category created successfully");
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                return ResponseFormatter.ServerError();
+                return ResponseFormatter.Error(ex.Message);
             }
         }
 
@@ -54,11 +55,11 @@ namespace backend_dotnet.Controllers
             try
             {
                 var category = await _productCategoryService.GetByIdAsync(id);
-                if (category == null)
-                {
-                    return ResponseFormatter.NotFound("Category not found");
-                }
                 return ResponseFormatter.Success(category, "Category found successfully");
+            }
+            catch (KeyNotFoundException)
+            {
+                return ResponseFormatter.NotFound("Category not found");
             }
             catch (Exception ex)
             {

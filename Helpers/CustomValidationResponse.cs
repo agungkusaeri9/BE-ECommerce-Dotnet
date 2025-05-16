@@ -11,7 +11,7 @@ namespace backend_dotnet.Helpers
             var errors = context.ModelState
                 .Where(m => m.Value?.Errors.Count > 0)
                 .ToDictionary(
-                    kvp => kvp.Key,
+                    kvp => kvp.Key.ToLower(),
                     kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
                 );
 

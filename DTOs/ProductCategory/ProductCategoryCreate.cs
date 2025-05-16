@@ -8,7 +8,6 @@ namespace backend_dotnet.DTOs.ProductCategory
 {
     public class ProductCategoryCreate
     {
-        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; } = default!;
         public IFormFile? Image { get; set; } = default!;
     }

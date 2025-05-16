@@ -24,9 +24,11 @@ namespace backend_dotnet.Services
             return await _productCategoryRepository.GetAllAsync(page, limit);
         }
 
-        public Task<ProductCategory?> GetByIdAsync(int id)
+        public async Task<ProductCategory?> GetByIdAsync(int id)
         {
-            return _productCategoryRepository.GetByIdAsync(id);
+            var category = await _productCategoryRepository.GetByIdAsync(id);
+            if (category == null) throw new KeyNotFoundException("Category not found");
+            return category;
         }
 
         public async Task<ProductCategory> CreateAsync(ProductCategoryCreate request)
@@ -54,7 +56,7 @@ namespace backend_dotnet.Services
         public async Task<ProductCategory> UpdateAsync(int id, ProductCategoryUpdate request)
         {
             var existing = await _productCategoryRepository.GetByIdAsync(id);
-            if (existing == null) throw new Exception("Category not found");
+            if (existing == null) throw new KeyNotFoundException("Category not found");
 
             if (request.Image != null)
             {
