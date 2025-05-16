@@ -1,0 +1,14 @@
+# Normalisasi line endings untuk semua file teks
+* text=auto
+
+# Shell scripts pakai LF (Linux style)
+*.sh text eol=lf
+
+# Bat script pakai CRLF (Windows style)
+*.bat text eol=crlf
+
+# C# source files pakai CRLF (Windows style)
+*.cs text eol=crlf
+
+# Config JSON pakai LF agar cross-platform
+*.json text eol=lf
