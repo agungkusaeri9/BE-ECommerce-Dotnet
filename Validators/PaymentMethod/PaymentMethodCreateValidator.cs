@@ -15,9 +15,11 @@ namespace backend_dotnet.Validators.Brand
             RuleFor(x => x.OwnerName)
                 .NotEmpty().WithMessage("OwnerName is required");
             RuleFor(x => x.IsActive)
-                .NotEmpty().WithMessage("IsActive is required");
+                .NotEmpty().WithMessage("IsActive is required").
+                Must(x => x == true || x == false).WithMessage("IsActive must be true or false");
             RuleFor(x => x.Type)
-                .NotEmpty().WithMessage("Type is required");
+                .NotEmpty().WithMessage("Type is required").
+                Must(x => x == "Bank Transfer" || x == "Ewallet").WithMessage("Type must be Bank Transfer or Ewallet");
             RuleFor(x => x.Image)
                 .NotNull().WithMessage("Image is required")
                 .Must(BeAValidImage).WithMessage("Only JPG, JPEG, PNG files are allowed")

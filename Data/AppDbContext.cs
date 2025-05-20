@@ -15,5 +15,19 @@ namespace backend_dotnet.Data
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Product> Products { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Brand)
+                .WithMany()
+                .HasForeignKey(p => p.BrandId);
+            modelBuilder.Entity<Product>()
+            .HasOne(p => p.Category)
+            .WithMany()
+            .HasForeignKey(p => p.CategoryId);
+        }
     }
 }

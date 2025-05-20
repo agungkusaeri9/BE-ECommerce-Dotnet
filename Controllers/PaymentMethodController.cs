@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend_dotnet.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/payment-methods")]
     public class PaymentMethodController : ControllerBase
     {
         private readonly IPaymentMethodService _paymentMethodService;
