@@ -92,11 +92,11 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAsync(int Id, [FromForm] ProductUpdate request)
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] ProductUpdate request)
         {
             try
             {
-                var product = _context.Products.FirstOrDefault(p => p.Id == Id);
+                var product = _context.Products.FirstOrDefault(p => p.Id == id);
                 if (product == null)
                     return ResponseFormatter.NotFound("Product not found");
 

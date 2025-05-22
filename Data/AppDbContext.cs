@@ -16,6 +16,7 @@ namespace backend_dotnet.Data
         public DbSet<Brand> Brands { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Courier> Couriers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
