@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend_dotnet.Data;
+using backend_dotnet.DTOs;
 using backend_dotnet.DTOs.Courier;
 using backend_dotnet.Entities;
 using backend_dotnet.Helpers;
@@ -22,18 +23,35 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCouriers()
+        public async Task<IActionResult> GetCouriers([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            try
-            {
-                var couriers = await _appDbContext.Couriers.ToListAsync();
-                return ResponseFormatter.Success(couriers, "Couriers found successfully");
-            }
-            catch (System.Exception)
-            {
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
 
-                throw;
-            }
+            var totalUsers = await _appDbContext.Couriers.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalUsers / limit);
+
+            var users = await _appDbContext.Couriers
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(user => new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Status
+                })
+                .ToListAsync();
+
+            var paginatedResult = new PaginationMeta<object>
+            {
+                // Data = users,
+                CurrentPage = page,
+                ItemsPerPage = limit,
+                TotalItems = totalUsers,
+                TotalPages = totalPages
+            };
+
+            return ResponseFormatter.Success(users, "Couriers found successfully", pagination: paginatedResult);
         }
 
         [HttpPost]

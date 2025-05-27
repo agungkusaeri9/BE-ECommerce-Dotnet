@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using backend_dotnet.DTOs.Authentication;
 using backend_dotnet.Helpers;
 using backend_dotnet.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_dotnet.Controllers
@@ -20,6 +21,7 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             try
@@ -34,6 +36,7 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             try

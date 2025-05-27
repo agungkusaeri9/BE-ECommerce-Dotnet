@@ -43,12 +43,48 @@ namespace backend_dotnet.Extentions
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtIssuer,
                         ValidAudience = jwtAudience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
+                    };
+
+                    // Tambahkan custom handler untuk 401 Unauthorized
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnChallenge = context =>
+                        {
+                            context.HandleResponse(); // prevent default 401 behavior
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+
+                            var result = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                success = false,
+                                message = "Unauthorized. Please login to access this resource."
+                            });
+
+                            return context.Response.WriteAsync(result);
+                        },
+
+                        // Optional: Tambahan untuk 403 Forbidden
+                        OnForbidden = context =>
+                        {
+                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            context.Response.ContentType = "application/json";
+
+                            var result = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                success = false,
+                                message = "You do not have permission to access this resource."
+                            });
+
+                            return context.Response.WriteAsync(result);
+                        }
                     };
                 });
 
             return services;
         }
+
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {

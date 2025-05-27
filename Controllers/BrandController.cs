@@ -1,8 +1,10 @@
+using backend_dotnet.Data;
 using backend_dotnet.DTOs;
 using backend_dotnet.DTOs.Brand;
 using backend_dotnet.Helpers;
 using backend_dotnet.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_dotnet.Controllers
 {
@@ -11,27 +13,47 @@ namespace backend_dotnet.Controllers
     public class BrandController : ControllerBase
     {
         private readonly IBrandService _brandService;
+        private readonly AppDbContext _appDbContext;
 
-        public BrandController(IBrandService service)
+        public BrandController(IBrandService service, AppDbContext appDbContext)
         {
+            _appDbContext = appDbContext;
             _brandService = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        public async Task<IActionResult> GetPayments([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            var (items, totalItems) = await _brandService.GetAllAsync(page, limit);
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
 
-            var pagination = new PaginationMeta
+            var totalUsers = await _appDbContext.Brands.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalUsers / limit);
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+            var users = await _appDbContext.Brands
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(brand => new
+                {
+                    brand.Id,
+                    brand.Name,
+                    // brand.Image,
+                    Image = baseUrl + "/" + brand.Image
+                })
+                .ToListAsync();
+
+            var paginatedResult = new PaginationMeta<object>
             {
                 CurrentPage = page,
-                PageSize = limit,
-                TotalItems = totalItems,
-                TotalPages = (int)Math.Ceiling((double)totalItems / limit)
+                ItemsPerPage = limit,
+                TotalItems = totalUsers,
+                TotalPages = totalPages
             };
 
-            return ResponseFormatter.Success(data: items, pagination: pagination);
+            return ResponseFormatter.Success(users, "Brand found successfully", pagination: paginatedResult);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] BrandCreate request)

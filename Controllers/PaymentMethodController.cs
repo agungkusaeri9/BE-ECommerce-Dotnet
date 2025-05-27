@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend_dotnet.Data;
 using backend_dotnet.DTOs;
 using backend_dotnet.DTOs.PaymentMethod;
 using backend_dotnet.Helpers;
 using backend_dotnet.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_dotnet.Controllers
 {
@@ -15,27 +17,47 @@ namespace backend_dotnet.Controllers
     public class PaymentMethodController : ControllerBase
     {
         private readonly IPaymentMethodService _paymentMethodService;
+        private readonly AppDbContext _appDbContext;
 
-        public PaymentMethodController(IPaymentMethodService service)
+        public PaymentMethodController(IPaymentMethodService service, AppDbContext appDbContext)
         {
+            _appDbContext = appDbContext;
             _paymentMethodService = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        public async Task<IActionResult> GetPayments([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            var (items, totalItems) = await _paymentMethodService.GetAllAsync(page, limit);
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
 
-            var pagination = new PaginationMeta
+            var totalUsers = await _appDbContext.PaymentMethods.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalUsers / limit);
+
+            var users = await _appDbContext.Users
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(user => new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    user.Role
+                })
+                .ToListAsync();
+
+            var paginatedResult = new PaginationMeta<object>
             {
+                // Data = users,
                 CurrentPage = page,
-                PageSize = limit,
-                TotalItems = totalItems,
-                TotalPages = (int)Math.Ceiling((double)totalItems / limit)
+                ItemsPerPage = limit,
+                TotalItems = totalUsers,
+                TotalPages = totalPages
             };
 
-            return ResponseFormatter.Success(data: items, pagination: pagination);
+            return Ok(ResponseFormatter.Success(paginatedResult, "Users found successfully"));
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] PaymentMethodCreate request)

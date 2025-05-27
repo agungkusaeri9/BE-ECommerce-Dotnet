@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend_dotnet.Data;
+using backend_dotnet.DTOs;
 using backend_dotnet.DTOs.User;
 using backend_dotnet.Entities;
 using backend_dotnet.Helpers;
@@ -25,19 +26,38 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            try
-            {
-                var users = await _appDbContext.Users.Select(user => new { user.Id, user.Name, user.Email, user.Role }).ToListAsync();
-                return ResponseFormatter.Success(users, "Users found successfully");
-            }
-            catch (System.Exception)
-            {
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
 
-                throw;
-            }
+            var totalUsers = await _appDbContext.Users.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalUsers / limit);
+
+            var users = await _appDbContext.Users
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(user => new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    user.Role
+                })
+                .ToListAsync();
+
+            var paginatedResult = new PaginationMeta<object>
+            {
+                // Data = users,
+                CurrentPage = page,
+                ItemsPerPage = limit,
+                TotalItems = totalUsers,
+                TotalPages = totalPages
+            };
+
+            return ResponseFormatter.Success(users, "Users found successfully", pagination: paginatedResult);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] UserCreateRequest request)
@@ -63,7 +83,6 @@ namespace backend_dotnet.Controllers
                     Email = newUser.Email,
                     Role = newUser.Role
                 };
-
                 return ResponseFormatter.Success(userResponse, "User created successfully");
             }
             catch (Exception ex)
@@ -101,7 +120,7 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> GetById(int id, [FromBody] UserUpdateRequest request)
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] UserUpdateRequest request)
         {
             try
             {

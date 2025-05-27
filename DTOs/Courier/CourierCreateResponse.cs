@@ -8,7 +8,7 @@ namespace backend_dotnet.DTOs.Courier
     public class CourierCreateResponse
     {
         public string Name { get; set; } = string.Empty;
-        public bool Status { get; set; } = false;
+        public int Status { get; set; } = 0;
 
     }
 }

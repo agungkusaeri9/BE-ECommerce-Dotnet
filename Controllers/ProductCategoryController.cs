@@ -1,8 +1,10 @@
+using backend_dotnet.Data;
 using backend_dotnet.DTOs;
 using backend_dotnet.DTOs.ProductCategory;
 using backend_dotnet.Helpers;
 using backend_dotnet.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace backend_dotnet.Controllers
@@ -13,27 +15,47 @@ namespace backend_dotnet.Controllers
     public class ProductCategoryController : ControllerBase
     {
         private readonly IProductCategoryService _productCategoryService;
-
-        public ProductCategoryController(IProductCategoryService service)
+        private readonly AppDbContext _appDbContext;
+        public ProductCategoryController(IProductCategoryService service, AppDbContext appDbContext)
         {
+
+            _appDbContext = appDbContext;
             _productCategoryService = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            var (items, totalItems) = await _productCategoryService.GetAllAsync(page, limit);
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
 
-            var pagination = new PaginationMeta
+            var totalUsers = await _appDbContext.ProductCategories.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalUsers / limit);
+
+            var users = await _appDbContext.Users
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(user => new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    user.Role
+                })
+                .ToListAsync();
+
+            var paginatedResult = new PaginationMeta<object>
             {
+                // Data = users,
                 CurrentPage = page,
-                PageSize = limit,
-                TotalItems = totalItems,
-                TotalPages = (int)Math.Ceiling((double)totalItems / limit)
+                ItemsPerPage = limit,
+                TotalItems = totalUsers,
+                TotalPages = totalPages
             };
 
-            return ResponseFormatter.Success(data: items, pagination: pagination);
+            return Ok(ResponseFormatter.Success(paginatedResult, "Users found successfully"));
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] ProductCategoryCreate request)
