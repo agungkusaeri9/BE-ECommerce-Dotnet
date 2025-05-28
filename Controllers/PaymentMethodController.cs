@@ -30,32 +30,34 @@ namespace backend_dotnet.Controllers
         {
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var totalPaymentMethod = await _appDbContext.PaymentMethods.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalPaymentMethod / limit);
 
-            var totalUsers = await _appDbContext.PaymentMethods.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalUsers / limit);
-
-            var users = await _appDbContext.Users
+            var paymentMethods = await _appDbContext.PaymentMethods
                 .Skip((page - 1) * limit)
                 .Take(limit)
-                .Select(user => new
+                .Select(pm => new
                 {
-                    user.Id,
-                    user.Name,
-                    user.Email,
-                    user.Role
+                    pm.Id,
+                    pm.Name,
+                    pm.Number,
+                    pm.OwnerName,
+                    pm.IsActive,
+                    Image = baseUrl + "/" + pm.Image
                 })
                 .ToListAsync();
 
             var paginatedResult = new PaginationMeta<object>
             {
-                // Data = users,
+                // Data = paymentMethods,
                 CurrentPage = page,
                 ItemsPerPage = limit,
-                TotalItems = totalUsers,
+                TotalItems = totalPaymentMethod,
                 TotalPages = totalPages
             };
 
-            return Ok(ResponseFormatter.Success(paginatedResult, "Users found successfully"));
+            return ResponseFormatter.Success(paymentMethods, "Payment Method found successfully", pagination: paginatedResult);
         }
 
 

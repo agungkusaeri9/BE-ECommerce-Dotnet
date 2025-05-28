@@ -10,6 +10,6 @@ namespace backend_dotnet.Entities
         public int Id { get; set; }
         public string Name { get; set; } = default!;
         public string Slug { get; set; } = default!;
-        public string Image { get; set; } = default!;
+        public string? Image { get; set; } = default!;
     }
 }

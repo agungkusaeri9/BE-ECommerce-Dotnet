@@ -27,7 +27,7 @@ namespace backend_dotnet.Entities
         public string? Type { get; set; } = string.Empty;
 
         [Column("isActive")]
-        public bool? IsActive { get; set; } = true;
+        public int? IsActive { get; set; } = 1;
 
         [Column("image")]
         public string? Image { get; set; } = string.Empty;

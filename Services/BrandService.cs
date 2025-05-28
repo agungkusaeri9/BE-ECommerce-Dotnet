@@ -55,7 +55,11 @@ namespace backend_dotnet.Services
             var existing = await _iBrandRepository.GetByIdAsync(id);
             if (existing == null) throw new KeyNotFoundException("Brand not found");
 
-            if (request.Image != null)
+            Console.WriteLine($"Updating brand with ID: {id}");
+            Console.WriteLine($"Request Name: {request.Name}");
+            Console.WriteLine($"Request Image: {request.Image?.FileName}");
+
+            if (request.Image != null && request.Image.Length > 0)
             {
                 if (!string.IsNullOrEmpty(existing.Image))
                 {
@@ -64,7 +68,7 @@ namespace backend_dotnet.Services
                 existing.Image = await _fileUploadService.UploadAsync(request.Image, "images/brands");
             }
             existing.Slug = (request.Name ?? string.Empty).ToLower().Replace(" ", "-");
-            existing.Name = request.Name;
+            existing.Name = request.Name ?? existing.Name;
 
             return await _iBrandRepository.UpdateAsync(existing);
         }

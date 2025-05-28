@@ -22,7 +22,7 @@ namespace backend_dotnet.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPayments([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        public async Task<IActionResult> GetBrands([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
@@ -93,7 +93,7 @@ namespace backend_dotnet.Controllers
             try
             {
                 var brand = await _brandService.UpdateAsync(id, request);
-                return ResponseFormatter.Success(brand, "Brand updated successfully");
+                return ResponseFormatter.Success(request, "Brand updated successfully");
             }
             catch (KeyNotFoundException)
             {
