@@ -23,5 +23,12 @@ namespace backend_dotnet.Entities
         [Column("role")]
         public string Role { get; set; } = "user";
 
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Column("updated_at")]
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+
     }
 }

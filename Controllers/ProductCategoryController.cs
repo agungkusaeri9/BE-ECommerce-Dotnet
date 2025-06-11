@@ -28,19 +28,20 @@ namespace backend_dotnet.Controllers
         {
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var totalCategory = await _appDbContext.ProductCategories.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCategory / limit);
 
-            var totalUsers = await _appDbContext.ProductCategories.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalUsers / limit);
-
-            var users = await _appDbContext.Users
+            var categories = await _appDbContext.ProductCategories
                 .Skip((page - 1) * limit)
                 .Take(limit)
-                .Select(user => new
+                .Select(category => new
                 {
-                    user.Id,
-                    user.Name,
-                    user.Email,
-                    user.Role
+                    category.Id,
+                    category.Name,
+                    Image = baseUrl + "/" + category.Image,
+                    category.CreatedAt,
+                    category.UpdatedAt,
                 })
                 .ToListAsync();
 
@@ -49,11 +50,11 @@ namespace backend_dotnet.Controllers
                 // Data = users,
                 CurrentPage = page,
                 ItemsPerPage = limit,
-                TotalItems = totalUsers,
+                TotalItems = totalCategory,
                 TotalPages = totalPages
             };
 
-            return Ok(ResponseFormatter.Success(paginatedResult, "Users found successfully"));
+            return ResponseFormatter.Success(categories, "Categories found successfully", pagination: paginatedResult);
         }
 
 

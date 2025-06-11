@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,8 +7,10 @@ using backend_dotnet.DTOs.Brand;
 using backend_dotnet.DTOs.Product;
 using backend_dotnet.Entities;
 using backend_dotnet.Helpers;
+using backend_dotnet.Interfaces;
 using backend_dotnet.Interfaces.Services;
 using backend_dotnet.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,15 +21,19 @@ namespace backend_dotnet.Controllers
     public class ProductController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IFileUploadService _fileUploadService;
 
-        public ProductController(AppDbContext context)
+        public ProductController(AppDbContext context, IFileUploadService uploadService)
         {
             _context = context;
+            _fileUploadService = uploadService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(int page, int limit)
         {
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
             var products = await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
@@ -40,7 +46,7 @@ namespace backend_dotnet.Controllers
                     p.Stock,
                     p.Category,
                     p.Brand,
-                    p.Image
+                    Image = baseUrl + "/" + p.Image
                 })
                 .ToListAsync();
 
@@ -52,14 +58,21 @@ namespace backend_dotnet.Controllers
         {
             try
             {
+                string? imagePath = null;
+                if (request.Image != null)
+                {
+                    imagePath = await _fileUploadService.UploadAsync(request.Image, "images/products");
+                }
+
                 var product = new Product
                 {
                     Name = request.Name,
                     Price = request.Price,
                     Description = request.Description,
-                    Stock = request.Stock,
+                    //Stock = request.Stock,
                     CategoryId = request.CategoryId,
                     BrandId = request.BrandId,
+                    Image = imagePath
                 };
                 product.Slug = (product.Name ?? string.Empty).ToLower().Replace(" ", "-");
 
@@ -100,6 +113,12 @@ namespace backend_dotnet.Controllers
                 if (product == null)
                     return ResponseFormatter.NotFound("Product not found");
 
+                string? imagePath = null;
+                if (request.Image != null)
+                {
+                    imagePath = await _fileUploadService.UploadAsync(request.Image, "images/products");
+                    product.Image = imagePath;
+                }
                 product.Name = request.Name;
                 product.Price = request.Price;
                 product.Description = request.Description;

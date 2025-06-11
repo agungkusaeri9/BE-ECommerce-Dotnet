@@ -19,5 +19,12 @@ namespace backend_dotnet.Entities
 
         [Column("image")]
         public string Image { get; set; } = string.Empty;
+
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Column("updated_at")]
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
     }
 }

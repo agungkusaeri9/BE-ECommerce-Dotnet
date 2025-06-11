@@ -24,15 +24,22 @@ var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
 var configuration = builder.Configuration;
 
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        //policy.WithOrigins("http://localhost:3002")
+        //    .AllowAnyHeader()
+        //    .AllowAnyMethod();
+
+        policy
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
+
 
 builder.Services.AddControllers(options =>
 {
@@ -99,11 +106,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddScoped<StockService>();
+
+
 
 var app = builder.Build();
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 if (app.Environment.IsDevelopment())
@@ -116,9 +126,9 @@ if (app.Environment.IsDevelopment())
 }
 
 
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowFrontend");
 app.MapControllers();
 
 app.Run();

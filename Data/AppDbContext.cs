@@ -18,6 +18,8 @@ namespace backend_dotnet.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Courier> Couriers { get; set; }
 
+        public DbSet<Stock> Stocks { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

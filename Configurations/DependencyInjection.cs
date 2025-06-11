@@ -24,6 +24,7 @@ namespace backend_dotnet.Configurations
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<StockService>();
             return services;
         }
     }

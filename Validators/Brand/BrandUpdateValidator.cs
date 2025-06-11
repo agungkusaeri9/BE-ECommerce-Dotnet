@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace backend_dotnet.Validators.Brand
 {
-    public class BrandUpdateValidator : AbstractValidator<BrandUpdate>
+    public class BrandUpdateValidation : AbstractValidator<BrandUpdate>
     {
-        public BrandUpdateValidator()
+        public BrandUpdateValidation()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required");
