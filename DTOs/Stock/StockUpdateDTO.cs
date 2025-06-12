@@ -1,6 +1,6 @@
 ﻿namespace backend_dotnet.DTOs.Stock
 {
-    public class StockUpdate
+    public class StockUpdateDTO
     {
         public string Type { get; set; } = string.Empty;
 

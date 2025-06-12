@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace backend_dotnet.Validators.Brand
 {
-    public class StockUpdateValidation : AbstractValidator<StockUpdate>
+    public class StockUpdateValidation : AbstractValidator<StockUpdateDTO>
     {
         public StockUpdateValidation()
         {

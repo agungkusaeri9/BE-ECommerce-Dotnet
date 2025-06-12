@@ -22,11 +22,13 @@ namespace backend_dotnet.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IFileUploadService _fileUploadService;
+        private readonly IProductService _productService;
 
-        public ProductController(AppDbContext context, IFileUploadService uploadService)
+        public ProductController(AppDbContext context, IFileUploadService uploadService, IProductService productService)
         {
             _context = context;
             _fileUploadService = uploadService;
+            _productService = productService;
         }
 
         [AllowAnonymous]
@@ -109,25 +111,7 @@ namespace backend_dotnet.Controllers
         {
             try
             {
-                var product = _context.Products.FirstOrDefault(p => p.Id == id);
-                if (product == null)
-                    return ResponseFormatter.NotFound("Product not found");
-
-                string? imagePath = null;
-                if (request.Image != null)
-                {
-                    imagePath = await _fileUploadService.UploadAsync(request.Image, "images/products");
-                    product.Image = imagePath;
-                }
-                product.Name = request.Name;
-                product.Price = request.Price;
-                product.Description = request.Description;
-                product.Stock = request.Stock ?? 0;
-                product.CategoryId = request.CategoryId;
-                product.BrandId = request.BrandId;
-
-                product.Slug = (product.Name ?? string.Empty).ToLower().Replace(" ", "-");
-                await _context.SaveChangesAsync();
+                var product = await _productService.UpdateAsync(id, request);
                 return ResponseFormatter.Success(product, "Product updated successfully");
             }
             catch (System.Exception)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend_dotnet.DTOs.Product;
 using backend_dotnet.Entities;
 using backend_dotnet.Interfaces.Repositories;
 using backend_dotnet.Interfaces.Services;
@@ -21,10 +22,11 @@ namespace backend_dotnet.Services
         {
             return await _productRepository.GetAllAsync(page, limit);
         }
-        // public async Task<Product> GetByIdAsync(int id)
-        // {
-        //     return await _productRepository.GetByIdAsync(id);
-        // }
+        public async Task<Product> GetByIdAsync(int id)
+        {
+          
+            return await _productRepository.GetByIdAsync(id);
+        }
 
         public async Task<Product> CreateAsync(Product product)
         {
@@ -32,10 +34,11 @@ namespace backend_dotnet.Services
             return await _productRepository.CreateAsync(product);
         }
 
-        // public async Task<Product> UpdateAsync(int id, Product product)
-        // {
-        //     return await _productRepository.UpdateAsync(id, product);
-        // }
+        public async Task<Product> UpdateAsync(int id, ProductUpdate productUpdateDTO)
+        {
+
+            return await _productRepository.UpdateAsync(id, productUpdateDTO);
+        }
 
         // public async Task<bool> DeleteAsync(int id)
         // {

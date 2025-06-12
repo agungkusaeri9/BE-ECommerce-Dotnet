@@ -11,15 +11,15 @@ namespace backend_dotnet.Configurations
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration config)
         {
-            var defaultConnection = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
+            //var defaultConnection = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
 
-            if (string.IsNullOrEmpty(defaultConnection))
-            {
-                throw new Exception("DEFAULT_CONNECTION environment variable is not set.");
-            }
+            //if (string.IsNullOrEmpty(defaultConnection))
+            //{
+            //    throw new Exception("DEFAULT_CONNECTION environment variable is not set.");
+            //}
 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseMySql(defaultConnection, ServerVersion.AutoDetect(defaultConnection)));
+            //services.AddDbContext<AppDbContext>(options =>
+            //    options.UseMySql(defaultConnection, ServerVersion.AutoDetect(defaultConnection)));
 
             return services;
         }
