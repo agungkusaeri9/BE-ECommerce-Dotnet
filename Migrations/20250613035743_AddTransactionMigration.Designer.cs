@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend_dotnet.Data;
 
@@ -11,9 +12,11 @@ using backend_dotnet.Data;
 namespace backend_dotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250613035743_AddTransactionMigration")]
+    partial class AddTransactionMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -412,7 +415,7 @@ namespace backend_dotnet.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("address");
 
-                    b.Property<int?>("CityId")
+                    b.Property<int>("CityId")
                         .HasColumnType("int")
                         .HasColumnName("city_id");
 
@@ -421,7 +424,7 @@ namespace backend_dotnet.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("code");
 
-                    b.Property<int?>("CourierId")
+                    b.Property<int>("CourierId")
                         .HasColumnType("int")
                         .HasColumnName("courier_id");
 
@@ -442,7 +445,7 @@ namespace backend_dotnet.Migrations
                         .HasColumnType("decimal(65,30)")
                         .HasColumnName("discount_total");
 
-                    b.Property<int?>("DistrictId")
+                    b.Property<int>("DistrictId")
                         .HasColumnType("int")
                         .HasColumnName("district_id");
 
@@ -455,7 +458,7 @@ namespace backend_dotnet.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("paid_at");
 
-                    b.Property<int?>("PaymentMethodId")
+                    b.Property<int>("PaymentMethodId")
                         .HasColumnType("int")
                         .HasColumnName("payment_method_id");
 
@@ -478,7 +481,7 @@ namespace backend_dotnet.Migrations
                         .HasColumnType("int")
                         .HasColumnName("product_promo_id");
 
-                    b.Property<int?>("ProvinceId")
+                    b.Property<int>("ProvinceId")
                         .HasColumnType("int")
                         .HasColumnName("province_id");
 
@@ -516,7 +519,7 @@ namespace backend_dotnet.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.Property<int?>("VillageId")
+                    b.Property<int>("VillageId")
                         .HasColumnType("int")
                         .HasColumnName("village_id");
 
@@ -719,19 +722,27 @@ namespace backend_dotnet.Migrations
                 {
                     b.HasOne("backend_dotnet.Entities.City", "City")
                         .WithMany()
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("backend_dotnet.Entities.Courier", "Courier")
                         .WithMany()
-                        .HasForeignKey("CourierId");
+                        .HasForeignKey("CourierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("backend_dotnet.Entities.District", "District")
                         .WithMany()
-                        .HasForeignKey("DistrictId");
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("backend_dotnet.Entities.PaymentMethod", "PaymentMethod")
                         .WithMany()
-                        .HasForeignKey("PaymentMethodId");
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("backend_dotnet.Entities.ProductPromo", "ProductPromo")
                         .WithMany()
@@ -739,7 +750,9 @@ namespace backend_dotnet.Migrations
 
                     b.HasOne("backend_dotnet.Entities.Province", "Province")
                         .WithMany()
-                        .HasForeignKey("ProvinceId");
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("backend_dotnet.Entities.User", "User")
                         .WithMany()
@@ -749,7 +762,9 @@ namespace backend_dotnet.Migrations
 
                     b.HasOne("backend_dotnet.Entities.Village", "Village")
                         .WithMany()
-                        .HasForeignKey("VillageId");
+                        .HasForeignKey("VillageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("City");
 

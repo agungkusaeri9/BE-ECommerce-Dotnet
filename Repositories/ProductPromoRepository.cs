@@ -54,10 +54,17 @@ namespace backend_dotnet.Repositories
                 throw new Exception("ProductPromo not found");
             }
 
-            item.ProductId = dto.ProductId;
             item.ValidUntil = dto.ValidUntil;
             item.DiscountNominal = dto.DiscountNominal;
 
+            await _appDbContext.SaveChangesAsync();
+            return item;
+        }
+
+        public async Task<ProductPromo> DeleteAsync(int id)
+        {
+            var item = await _appDbContext.ProductPromo.FindAsync(id);
+             _appDbContext.ProductPromo.Remove(item);
             await _appDbContext.SaveChangesAsync();
             return item;
         }

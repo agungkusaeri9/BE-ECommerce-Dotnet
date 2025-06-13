@@ -9,5 +9,6 @@ namespace backend_dotnet.Interfaces.Services
         Task<ProductPromo> CreateAsync(ProductPromoCreateDTO productPromoCreateDTO);
         Task<ProductPromo> GetByIdAsync(int id);
         Task<ProductPromo> UpdateAsync(int id, ProductPromoUpdateDTO productPromoUpdateDTO);
+        Task<ProductPromo> DeleteAsync(int id);
     }
 }

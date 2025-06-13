@@ -107,6 +107,7 @@ namespace backend_dotnet.Extentions
             services.AddScoped<StockService>();
             services.AddScoped<IProductPromoRepository, ProductPromoRepository>();
             services.AddScoped<IProductPromoService, ProductPromoService>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             return services;
         }

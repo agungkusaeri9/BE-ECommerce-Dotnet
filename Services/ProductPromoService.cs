@@ -34,5 +34,14 @@ namespace backend_dotnet.Services
         {
             return await _productPromoRepository.UpdateAsync(id, dto);
         }
+
+        public async Task<ProductPromo>DeleteAsync(int id)
+        {
+            var item = await _productPromoRepository.GetByIdAsync(id);
+            if (item == null)
+                throw new KeyNotFoundException($"Product Promo with ID {id} not found.");
+             await _productPromoRepository.DeleteAsync(id);
+            return item;
+        }
     }
 }

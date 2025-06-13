@@ -77,5 +77,35 @@ namespace backend_dotnet.Controllers
             }
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ProductPromoUpdateDTO dto)
+        {
+            try
+            {
+                var updated = await _productPromoService.UpdateAsync(id, dto);
+                return ResponseFormatter.Success(updated, "Product Promo has been updated");
+            }catch (Exception ex)
+            {
+                return ResponseFormatter.Error(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var itemDelete = await _productPromoService.DeleteAsync(id);
+                return ResponseFormatter.Success(itemDelete, "Product Promo has been deleted succesfully");
+            }catch(KeyNotFoundException ex)
+            {
+                return ResponseFormatter.NotFound(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                return ResponseFormatter.Error(ex.Message);
+            }
+        }
+
     }
 }

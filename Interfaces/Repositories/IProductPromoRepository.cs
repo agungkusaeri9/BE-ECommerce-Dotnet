@@ -9,6 +9,7 @@ namespace backend_dotnet.Interfaces.Repositories
         Task<ProductPromo> CreateAsync(ProductPromoCreateDTO productPromoCreateDTO);
         Task<ProductPromo>GetByIdAsync(int id);
         Task<ProductPromo> UpdateAsync(int id, ProductPromoUpdateDTO dto);
+        Task<ProductPromo> DeleteAsync(int id);
 
     }
 }
