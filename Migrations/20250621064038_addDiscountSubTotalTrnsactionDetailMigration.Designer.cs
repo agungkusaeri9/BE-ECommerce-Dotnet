@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend_dotnet.Data;
 
@@ -11,9 +12,11 @@ using backend_dotnet.Data;
 namespace backend_dotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250621064038_addDiscountSubTotalTrnsactionDetailMigration")]
+    partial class addDiscountSubTotalTrnsactionDetailMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -488,8 +491,7 @@ namespace backend_dotnet.Migrations
                         .HasColumnName("shipped_at");
 
                     b.Property<decimal>("ShippingCost")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("shipping_cost");
 
                     b.Property<string>("ShippingTrackingNumber")
@@ -518,10 +520,6 @@ namespace backend_dotnet.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
-
-                    b.Property<Guid>("Uuid")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("uuid");
 
                     b.Property<int?>("VillageId")
                         .HasColumnType("int")
@@ -557,10 +555,6 @@ namespace backend_dotnet.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("discount");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("price");
@@ -577,10 +571,6 @@ namespace backend_dotnet.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
-
-                    b.Property<decimal>("SubTotal")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("sub_total");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)")
@@ -792,7 +782,7 @@ namespace backend_dotnet.Migrations
                         .IsRequired();
 
                     b.HasOne("backend_dotnet.Entities.Transaction", "Transaction")
-                        .WithMany("Items")
+                        .WithMany()
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -811,11 +801,6 @@ namespace backend_dotnet.Migrations
                         .IsRequired();
 
                     b.Navigation("District");
-                });
-
-            modelBuilder.Entity("backend_dotnet.Entities.Transaction", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

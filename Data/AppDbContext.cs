@@ -25,7 +25,7 @@ namespace backend_dotnet.Data
         public DbSet<Province> Provinces { get; set; }
         public DbSet<Village> Villages { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<TransactionItems> TransactionItems { get; set; }
+        public DbSet<TransactionItem> TransactionItem { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

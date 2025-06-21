@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace backend_dotnet.Entities
 {
-    public class TransactionItems
+    [Table("transactionitems")]
+    public class TransactionItem
     {
         [Column("id")]
         public int Id { get; set; }
@@ -24,8 +25,15 @@ namespace backend_dotnet.Entities
         public Product? Product { get; set; }
         [Column("quantity", TypeName = "int")]
         public int Quantity { get; set; }
+
         [Column("price", TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
+
+        [Column("discount", TypeName = "decimal(18,2)")]
+        public decimal Discount { get; set; } = 0;
+
+        [Column("sub_total", TypeName = "decimal(18,2)")]
+        public decimal SubTotal { get; set; }
 
         [Column("total", TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }

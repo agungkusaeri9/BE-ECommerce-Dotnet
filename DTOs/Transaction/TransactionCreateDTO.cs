@@ -1,4 +1,5 @@
-﻿using backend_dotnet.Entities;
+﻿using backend_dotnet.DTOs.TransactionItem;
+using backend_dotnet.Entities;
 
 namespace backend_dotnet.DTOs.Transaction
 {
@@ -6,25 +7,20 @@ namespace backend_dotnet.DTOs.Transaction
     {
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public int? ProvinceId { get; set; }
+        public int? CityId { get; set; }
+        public int? DistrictId { get; set; }
+        public int? VillageId { get; set; }
         public string PostalCode { get; set; } = string.Empty;
-        public string PhoneNumber {  get; set; } = string.Empty;
-        public string CourierService {  get; set; } = string.Empty;
-        public decimal SubTotal { get; set; }
-        public decimal Total { get; set; }
-        public decimal DiscountTotal { get; set; }
-        public string Status { get; set; } = string.Empty;
-        public decimal ShippingCost { get; set; }
-        public int CourierId { get; set; }
-        public int? ProductPromoId { get; set; }
-        public string PaymentStatus { get;set; } = string.Empty;
-        public string? ShippingTrackingNumber { get; set; } = string.Empty;
-        public int PaymentMethodId { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
+        public int? CourierId { get; set; }
+        public string CourierService { get; set; } = string.Empty;
+        public decimal? ShippingCost { get; set; }
+        public int? PaymentMethodId { get; set; }
         public int UserId { get; set; }
+        public int? ProductPromoId { get; set; }
 
-
-        //public List<TransactionItems> TransactionItems { get; set; } = new();
-
-        public List<TransactionItems> Items { get; set; } = new();
+        public List<TransactionItemCreateDTO> Items { get; set; } = new();
 
     }
 }

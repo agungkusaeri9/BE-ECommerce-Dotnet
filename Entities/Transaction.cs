@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_dotnet.Entities
 {
     public class Transaction
     {
+
         [Column("id")]
         public int Id { get; set; }
+
+        [Column("uuid")]
+        public Guid Uuid { get; set; } = Guid.NewGuid();
 
         [Column("code")]
         public string Code { get; set; } = string.Empty;
@@ -54,6 +59,7 @@ namespace backend_dotnet.Entities
         public string CourierService { get; set; } = string.Empty;
 
         [Column("shipping_cost")]
+        [Precision(18,2)]
         public decimal ShippingCost { get; set; } 
 
         [Column("shipping_tracking_number")]
@@ -81,12 +87,15 @@ namespace backend_dotnet.Entities
         public ProductPromo? ProductPromo { get; set; }
 
         [Column("sub_total")]
+        [Precision(18,2)]
         public decimal SubTotal { get; set; }
 
         [Column("discount_total")]
+        [Precision(18, 2)]
         public decimal DiscountTotal { get; set; }
 
         [Column("total")]
+        [Precision(18, 2)]
         public decimal Total { get; set; }
 
         [Column("status")]
@@ -104,6 +113,6 @@ namespace backend_dotnet.Entities
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; }
 
-        public List<TransactionItems> Items { get; set; } = new();
+        public List<TransactionItem> Items { get; set; } = new();
     }
 }

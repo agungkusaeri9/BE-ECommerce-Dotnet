@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend_dotnet.Data;
 
@@ -11,9 +12,11 @@ using backend_dotnet.Data;
 namespace backend_dotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250621070021_changeShippingCostMigrationNew")]
+    partial class changeShippingCostMigrationNew
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -519,10 +522,6 @@ namespace backend_dotnet.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.Property<Guid>("Uuid")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("uuid");
-
                     b.Property<int?>("VillageId")
                         .HasColumnType("int")
                         .HasColumnName("village_id");
@@ -792,7 +791,7 @@ namespace backend_dotnet.Migrations
                         .IsRequired();
 
                     b.HasOne("backend_dotnet.Entities.Transaction", "Transaction")
-                        .WithMany("Items")
+                        .WithMany()
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -811,11 +810,6 @@ namespace backend_dotnet.Migrations
                         .IsRequired();
 
                     b.Navigation("District");
-                });
-
-            modelBuilder.Entity("backend_dotnet.Entities.Transaction", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
